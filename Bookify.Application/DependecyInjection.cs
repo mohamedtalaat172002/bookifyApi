@@ -8,7 +8,7 @@ namespace Bookify.Application
 
     public static class DependecyInjection
     {
-        public static IServiceCollection serviceCollection(this IServiceCollection services)
+        public static IServiceCollection AddApplicationDependecies(this IServiceCollection services)
         {
             services.AddMediatR(
                 cfg =>
