@@ -4,6 +4,7 @@ using bookify.domain.Bookings;
 using bookify.domain.Users;
 using Bookify.Application.Abstraction.Clock;
 using Bookify.Application.Abstraction.Messaging;
+using Bookify.Application.Exceptions;
 
 namespace Bookify.Application.Booking.ReserveBooking
 {
@@ -44,10 +45,15 @@ namespace Bookify.Application.Booking.ReserveBooking
             {
                 return Result.Failure<Guid>(BookingErrors.OverLap);
             }
+            try
+            {
+                var booking = bookify.domain.Bookings.Booking.Reserve(_pricingService, apartment, request.UserId, duration, _dateTimeProvider.UtcNow);
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
+                return booking.id;
+            }
+            catch (ConcurrencyException)
+            { return Result.Failure<Guid>(BookingErrors.OverLap); }
 
-            var booking = bookify.domain.Bookings.Booking.Reserve(_pricingService, apartment, request.UserId, duration, _dateTimeProvider.UtcNow);
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
-            return booking.id;
 
         }
     }
