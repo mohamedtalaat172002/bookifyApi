@@ -1,0 +1,43 @@
+# services:
+#   bookify.api:
+#     image: ${DOCKER_REGISTRY-}bookifyapi
+#     container_name: Bookify.Api
+#     build:
+#       context: .
+#       dockerfile: bookify.Api/Dockerfile
+
+#    bookify-db:
+#    image: 
+#    container_name: Bookify.Db
+#    environment:
+#    -
+#    volumes:
+#   - 
+#   ports:
+services:
+
+  bookify.api:
+    image: ${DOCKER_REGISTRY-}bookifyapi
+    container_name: Bookify.Api
+    build:
+      context: .
+      dockerfile: bookify.Api/Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - bookify-db
+
+  bookify-db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: Bookify-Db
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "sqlserver"
+    volumes:
+      - bookify-db-data:/var/opt/mssql
+    ports:
+      - "1433:1433"
+
+volumes:
+  bookify-db-data:
+

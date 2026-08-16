@@ -17,7 +17,7 @@ namespace Bookify.Application.Booking.ReserveBooking
         private readonly IApartmentRepository _apartmentRepository;
         private readonly PricingService _pricingService;
 
-        private ReserveBookingCommandHandler(IUniteOfWork unitOfWork, IDateTimeProvider dateTimeProvider, IBookingRepository bookingRepository, IUserRepository userRepository, IApartmentRepository apartmentRepository, PricingService pricingService)
+        public ReserveBookingCommandHandler(IUniteOfWork unitOfWork, IDateTimeProvider dateTimeProvider, IBookingRepository bookingRepository, IUserRepository userRepository, IApartmentRepository apartmentRepository, PricingService pricingService)
         {
             _unitOfWork = unitOfWork;
             _dateTimeProvider = dateTimeProvider;

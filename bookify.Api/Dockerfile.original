@@ -12,9 +12,6 @@ FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["bookify.Api/bookify.Api.csproj", "bookify.Api/"]
-COPY ["Bookify.Application/Bookify.Application.csproj", "Bookify.Application/"]
-COPY ["bookify.domain/bookify.domain.csproj", "bookify.domain/"]
-COPY ["Bookify.Infrastructure/Bookify.Infrastructure.csproj", "Bookify.Infrastructure/"]
 RUN dotnet restore "./bookify.Api/bookify.Api.csproj"
 COPY . .
 WORKDIR "/src/bookify.Api"

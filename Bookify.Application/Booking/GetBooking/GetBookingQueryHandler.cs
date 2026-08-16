@@ -8,7 +8,7 @@ namespace Bookify.Application.Booking.GetBooking
     internal sealed class GetBookingQueryHandler : IQueryHandler<GetBookingQuery, BookingResponse>
     {
         private readonly ISqlConnectionFactory _sqlConnectionFactory;
-        private GetBookingQueryHandler(ISqlConnectionFactory sqlConnectionFactory)
+        public GetBookingQueryHandler(ISqlConnectionFactory sqlConnectionFactory)
         {
             _sqlConnectionFactory = sqlConnectionFactory;
         }
