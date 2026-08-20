@@ -35,7 +35,20 @@ namespace Bookify.Infrastructure.Configurations
                 (Currency => Currency.Code, code => Currency.FromCode(code));
             });
 
-            builder.OwnsOne(builder => builder.Duration);
+            builder.OwnsOne(b => b.Duration, durationBuilder =>
+            {
+                durationBuilder.Property(d => d.Start)
+                    .HasConversion(
+                        dateOnly => dateOnly.ToDateTime(TimeOnly.MinValue),
+                        dateTime => DateOnly.FromDateTime(dateTime))
+                    .HasColumnType("date");
+
+                durationBuilder.Property(d => d.End)
+                    .HasConversion(
+                        dateOnly => dateOnly.ToDateTime(TimeOnly.MinValue),
+                        dateTime => DateOnly.FromDateTime(dateTime))
+                    .HasColumnType("date");
+            });
 
             builder.HasOne<Apartment>()
             .WithMany().HasForeignKey(booking => booking.ApartmentId);

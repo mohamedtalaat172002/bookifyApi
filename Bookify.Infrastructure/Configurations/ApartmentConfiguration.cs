@@ -1,7 +1,9 @@
 ﻿using bookify.domain.Apartments;
 using bookify.domain.Shared;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.Text.Json;
 
 namespace Bookify.Infrastructure.Configurations
 {
@@ -36,6 +38,14 @@ namespace Bookify.Infrastructure.Configurations
                 .HasConversion(Currency => Currency.Code,
                     Code => Currency.FromCode(Code));
             });
+            builder.Property(apartment => apartment.Amenities)
+    .HasConversion(
+        amenities => JsonSerializer.Serialize(amenities, (JsonSerializerOptions?)null),
+        json => JsonSerializer.Deserialize<List<Amenity>>(json, (JsonSerializerOptions?)null) ?? new List<Amenity>(),
+        new ValueComparer<List<Amenity>>(
+            (c1, c2) => c1.SequenceEqual(c2),
+            c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
+            c => c.ToList()));
 
             builder.Property<uint>("Version").IsRowVersion();
 

@@ -54,6 +54,10 @@ namespace bookify.domain.Bookings
             return booking;
         }
 
+        private Booking()
+        {
+
+        }
         public Result Confirm(DateTime utcNow)
         {
             if (Status != BookingStatus.reserved)

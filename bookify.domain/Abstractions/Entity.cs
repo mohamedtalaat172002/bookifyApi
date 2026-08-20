@@ -7,6 +7,10 @@
         {
             this.id = id;
         }
+        protected Entity()
+        {
+
+        }
         public Guid id { get; init; }
 
         public IReadOnlyList<IDomainEvent> GetEvents() => domainEvents;

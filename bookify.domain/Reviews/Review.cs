@@ -25,6 +25,10 @@ namespace bookify.domain.Reviews
         public Comment Comment { get; private set; }
         public DateTime CreatedAt { get; private set; }
 
+        private Review()
+        {
+
+        }
         public static Result<Review> Create
             (Apartment apartment,
             Booking booking, Rating rating,

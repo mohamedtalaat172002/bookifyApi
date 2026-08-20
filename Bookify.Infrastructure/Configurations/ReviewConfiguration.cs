@@ -35,12 +35,12 @@ namespace Bookify.Infrastructure.Configurations
             builder.HasOne<User>()
                 .WithMany()
                 .HasForeignKey(r => r.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasOne<Booking>()
                 .WithMany()
                 .HasForeignKey(r => r.BookingId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

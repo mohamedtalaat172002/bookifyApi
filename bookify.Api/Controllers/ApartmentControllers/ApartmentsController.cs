@@ -20,6 +20,7 @@ namespace bookify.Api.Controllers.ApartmentControllers
         {
 
             var result = await _sender.Send(new SearchApartmentsQuery(start, end), cancellationToken);
+
             return Ok(result.Value);
         }
     }
