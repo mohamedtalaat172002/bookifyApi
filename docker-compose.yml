@@ -1,43 +1,41 @@
-# services:
-#   bookify.api:
-#     image: ${DOCKER_REGISTRY-}bookifyapi
-#     container_name: Bookify.Api
-#     build:
-#       context: .
-#       dockerfile: bookify.Api/Dockerfile
 
-#    bookify-db:
-#    image: 
-#    container_name: Bookify.Db
-#    environment:
-#    -
-#    volumes:
-#   - 
-#   ports:
 services:
 
-  bookify.api:
-    image: ${DOCKER_REGISTRY-}bookifyapi
-    container_name: Bookify.Api
-    build:
-      context: .
-      dockerfile: bookify.Api/Dockerfile
-    ports:
-      - "8080:8080"
-    depends_on:
-      - bookify-db
+  # bookify.api:
+  #   image: ${DOCKER_REGISTRY-}bookifyapi
+  #   container_name: Bookify.Api
+  #   build:
+  #     context: .
+  #     dockerfile: bookify.Api/Dockerfile
+  #   ports:
+  #     - "8080:8080"
+  #   depends_on:
+  #     - bookify-db
 
-  bookify-db:
-    image: mcr.microsoft.com/mssql/server:2022-latest
-    container_name: Bookify-Db
+  # bookify-db:
+  #   image: mcr.microsoft.com/mssql/server:2022-latest
+  #   container_name: Bookify-Db
+  #   environment:
+  #     ACCEPT_EULA: "Y"
+  #     MSSQL_SA_PASSWORD: "sqlserver"
+  #   volumes:
+  #     - bookify-db-data:/var/opt/mssql
+  #   ports:
+  #     - "1433:1433"
+
+# volumes:
+#   bookify-db-data:
+
+
+  bookify-idp:
+    image: quay.io/keycloak/keycloak:latest
+    container_name: Bookify.Identity
+    command: start-dev --import-realm
     environment:
-      ACCEPT_EULA: "Y"
-      MSSQL_SA_PASSWORD: "sqlserver"
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
     volumes:
-      - bookify-db-data:/var/opt/mssql
+      - ./.containers/identity:/opt/keycloak/data
+      - ./.files/bookify-realm-export.json:/opt/keycloak/data/import/realm.json
     ports:
-      - "1433:1433"
-
-volumes:
-  bookify-db-data:
-
+      - 18080:8080
