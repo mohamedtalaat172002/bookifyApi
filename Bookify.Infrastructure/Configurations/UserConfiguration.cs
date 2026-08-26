@@ -31,7 +31,7 @@ namespace Bookify.Infrastructure.Configurations
                     value => new bookify.domain.Users.Email(value));
 
             builder.HasIndex(user => user.Email).IsUnique();
-
+            builder.HasIndex(user => user.IdentityID).IsUnique();
 
 
         }

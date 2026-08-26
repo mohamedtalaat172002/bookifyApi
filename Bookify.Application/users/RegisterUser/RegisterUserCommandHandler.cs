@@ -23,7 +23,7 @@ namespace Bookify.Application.users.RegisterUser
 
             var user = User.Create(new FirstName(request.FirstName), new LastName(request.LastName), new Email(request.Email));
 
-            var IdentityId = await _authenticationService.RegisterASync
+            var IdentityId = await _authenticationService.RegisterAsync
                 (user, request.Password, cancellationToken);
 
             user.SetIdentiyId(IdentityId);

@@ -2,6 +2,7 @@
 using bookify.domain.Apartments;
 using bookify.domain.Bookings;
 using bookify.domain.Users;
+using Bookify.Application.Abstraction.Authentication;
 using Bookify.Application.Abstraction.Clock;
 using Bookify.Application.Abstraction.Data;
 using Bookify.Application.Abstraction.EmailService;
@@ -15,6 +16,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace Bookify.Infrastructure
 {
@@ -30,12 +32,36 @@ namespace Bookify.Infrastructure
             services.AddTransient<IEmailService, EmailService>();
             addPersistence(services, configuration);
 
+            AddAuthenticationServices(services, configuration);
+
+            return services;
+        }
+
+        private static void AddAuthenticationServices(IServiceCollection services, IConfiguration configuration)
+        {
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer();
 
             services.Configure<AuthenticationOptions>(configuration.GetSection("Authentication"));
             services.ConfigureOptions<JwtBearerOptionsSetup>();
-            return services;
+
+            services.Configure<KeycloakOptions>(configuration.GetSection("Keyclock"));
+            services.AddTransient<AdminAuthorizationDelegatingHandler>();
+
+            services.AddHttpClient<IAuthenticationService, AuthenticationService>((ServiceProvider, HttpClient) =>
+            {
+
+                var KeyclockOptions = ServiceProvider.GetRequiredService<IOptions<KeycloakOptions>>().Value;
+                HttpClient.BaseAddress = new Uri(KeyclockOptions.AdminUrl);
+
+            }).AddHttpMessageHandler<AdminAuthorizationDelegatingHandler>();
+
+            services.AddHttpClient<IJwTService, JwTService>((ServiceProvider, HttpClient) =>
+            {
+
+                var KeyclockOptions = ServiceProvider.GetRequiredService<IOptions<KeycloakOptions>>().Value;
+                HttpClient.BaseAddress = new Uri(KeyclockOptions.TokenUrl);
+            });
         }
 
         private static void addPersistence(IServiceCollection services, IConfiguration configuration)
