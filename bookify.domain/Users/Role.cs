@@ -13,5 +13,6 @@
         public string name { get; init; } = string.Empty;
 
         public ICollection<User> users { get; init; } = new List<User>();
+        public ICollection<Permission> permissions { get; init; } = new List<Permission>();
     }
 }

@@ -23,9 +23,11 @@ namespace Bookify.Infrastructure.Authorization
             {
                 return principal;
             }
+
             using IServiceScope scope = _serviceProvider.CreateScope();
 
             AuthorizationService authorizationService = scope.ServiceProvider.GetRequiredService<AuthorizationService>();
+
 
             string identityId = principal.GetIdentityId();
 
