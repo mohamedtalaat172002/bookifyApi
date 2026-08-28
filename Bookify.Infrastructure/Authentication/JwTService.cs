@@ -1,6 +1,7 @@
 ﻿using bookify.domain.Abstractions;
 using Bookify.Application.Abstraction.Authentication;
 using Bookify.Infrastructure.Authentication.Models;
+using Microsoft.Extensions.Options;
 using System.Net.Http.Json;
 
 namespace Bookify.Infrastructure.Authentication
@@ -12,16 +13,17 @@ namespace Bookify.Infrastructure.Authentication
         private static readonly Error AuthenticationFailed = new(
             "KeyClock.AuthenticationFailed",
             "Failed to get The Token From KeyClock due to Authentication failur ");
-        public JwTService(HttpClient httpClient, KeycloakOptions keycloakOptions)
+        public JwTService(HttpClient httpClient, IOptions<KeycloakOptions> keycloakOptions)
         {
             _httpClient = httpClient;
-            _keycloakOptions = keycloakOptions;
+            _keycloakOptions = keycloakOptions.Value;
         }
 
         public async Task<Result<string>> GetAccessTokenAsync(string Email, string password, CancellationToken cancellationToken)
         {
             try
             {
+
                 var authRequestParameters = new KeyValuePair<string, string>[]
             {
                new ("client_id",_keycloakOptions.AuthClientId),

@@ -1,5 +1,6 @@
 ﻿using Bookify.Application.Apartments.SearchApartments;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace bookify.Api.Controllers.ApartmentControllers
@@ -15,6 +16,7 @@ namespace bookify.Api.Controllers.ApartmentControllers
             _sender = sender;
         }
 
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> SearchApartments(DateOnly start, DateOnly end, CancellationToken cancellationToken)
         {
