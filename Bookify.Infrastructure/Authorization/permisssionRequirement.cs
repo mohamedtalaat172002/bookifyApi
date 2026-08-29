@@ -10,4 +10,5 @@ namespace Bookify.Infrastructure.Authorization
         }
         public string permisssion { get; set; }
     }
+
 }
