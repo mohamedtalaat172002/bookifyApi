@@ -17,7 +17,11 @@ namespace bookify.Api.Extensions
         {
             app.UseMiddleware<ExceptionHandlingMiddleware>();
         }
-
+        public static IApplicationBuilder UseRequestContextLogging(this IApplicationBuilder app)
+        {
+            app.UseMiddleware<RequestContextMiddleware>();
+            return app;
+        }
 
     }
 }

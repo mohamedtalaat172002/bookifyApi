@@ -1,14 +1,17 @@
-﻿using Bookify.Application.Abstraction.Messaging;
+﻿using bookify.domain.Abstractions;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Serilog.Context;
 
 namespace Bookify.Application.Abstraction.Behavior
 {
-    public class LoggingBeahvior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : IBaseCommand
+    public class LoggingBeahvior<TRequest, TResponse>
+        : IPipelineBehavior<TRequest, TResponse>
+        where TRequest : IBaseRequest where TResponse : Result
     {
-        private readonly ILogger<TRequest> _logger;
+        private readonly ILogger<LoggingBeahvior<TRequest, TResponse>> _logger;
 
-        public LoggingBeahvior(ILogger<TRequest> logger)
+        public LoggingBeahvior(ILogger<LoggingBeahvior<TRequest, TResponse>> logger)
         {
             _logger = logger;
         }
@@ -18,14 +21,23 @@ namespace Bookify.Application.Abstraction.Behavior
             var requestName = request.GetType().Name;
             try
             {
-                _logger.LogInformation($"Executing command {requestName}");
+                _logger.LogInformation($"Executing request {requestName}");
                 var result = await next();
-                _logger.LogInformation($"Executed command {requestName} succedded");
+                if (result.IsSuccess)
+                {
+                    _logger.LogInformation($"Executed request {requestName} succeeded");
+
+                }
+                else
+                {
+                    using (LogContext.PushProperty("Errors", result.Error, true))
+                        _logger.LogError($"Executed request {requestName} failed with errors");
+                }
                 return result;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Executed command {requestName} failed");
+                _logger.LogError(ex, $"Executed request {requestName} failed");
                 throw;
             }
         }
