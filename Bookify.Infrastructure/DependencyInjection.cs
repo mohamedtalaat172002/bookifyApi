@@ -3,11 +3,13 @@ using bookify.domain.Apartments;
 using bookify.domain.Bookings;
 using bookify.domain.Users;
 using Bookify.Application.Abstraction.Authentication;
+using Bookify.Application.Abstraction.Caching;
 using Bookify.Application.Abstraction.Clock;
 using Bookify.Application.Abstraction.Data;
 using Bookify.Application.Abstraction.EmailService;
 using Bookify.Infrastructure.Authentication;
 using Bookify.Infrastructure.Authorization;
+using Bookify.Infrastructure.Caching;
 using Bookify.Infrastructure.Clock;
 using Bookify.Infrastructure.Data;
 using Bookify.Infrastructure.Email;
@@ -36,11 +38,19 @@ namespace Bookify.Infrastructure
             services.AddTransient<IDateTimeProvider, DateTimeProvider>();
             services.AddTransient<IEmailService, EmailService>();
             addPersistence(services, configuration);
+            AddCashingDependecis(services, configuration);
 
             addAuthorization(services);
             AddAuthenticationServices(services, configuration);
 
             return services;
+        }
+
+        private static void AddCashingDependecis(IServiceCollection services, IConfiguration configuration)
+        {
+            var ConnectionString = configuration.GetConnectionString("Cache") ?? throw new ArgumentNullException(nameof(configuration));
+            services.AddStackExchangeRedisCache(opt => opt.Configuration = ConnectionString);
+            services.AddSingleton<ICachService, CacheService>();
         }
 
         private static void addAuthorization(IServiceCollection services)

@@ -16,6 +16,7 @@ namespace Bookify.Application
                     cfg.RegisterServicesFromAssembly(typeof(DependecyInjection).Assembly);
                     cfg.AddOpenBehavior(typeof(LoggingBeahvior<,>));
                     cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
+                    cfg.AddOpenBehavior(typeof(QueryCachingBehavior<,>));
                 });
             services.AddTransient<PricingService>();
             services.AddValidatorsFromAssembly(typeof(DependecyInjection).Assembly);
