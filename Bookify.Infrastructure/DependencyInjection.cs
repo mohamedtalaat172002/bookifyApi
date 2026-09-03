@@ -1,4 +1,5 @@
-﻿using bookify.domain.Abstractions;
+﻿using Asp.Versioning;
+using bookify.domain.Abstractions;
 using bookify.domain.Apartments;
 using bookify.domain.Bookings;
 using bookify.domain.Users;
@@ -39,13 +40,30 @@ namespace Bookify.Infrastructure
             services.AddTransient<IEmailService, EmailService>();
             addPersistence(services, configuration);
             AddCashingDependecis(services, configuration);
+            AddVersioning(services);
 
             addAuthorization(services);
             AddAuthenticationServices(services, configuration);
 
             return services;
-        }
 
+
+        }
+        private static void AddVersioning(IServiceCollection services)
+        {
+            services.AddApiVersioning(config =>
+            {
+                config.DefaultApiVersion = new ApiVersion(1);
+                config.ReportApiVersions = true;
+                config.ApiVersionReader = new UrlSegmentApiVersionReader();
+            }).AddMvc()
+            .AddApiExplorer(opt =>
+            {
+                opt.GroupNameFormat = "'v'V";
+                opt.SubstituteApiVersionInUrl = true;
+            }
+            );
+        }
         private static void AddCashingDependecis(IServiceCollection services, IConfiguration configuration)
         {
             var ConnectionString = configuration.GetConnectionString("Cache") ?? throw new ArgumentNullException(nameof(configuration));
